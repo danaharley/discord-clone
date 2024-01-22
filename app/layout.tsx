@@ -3,7 +3,8 @@ import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 
-import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeProvider } from "@/components/providers/theme-provider";
+import { ModalProviders } from "@/components/providers/modal-providers";
 
 const font = Open_Sans({ subsets: ["latin"] });
 
@@ -21,6 +22,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
         <body className={font.className}>
+          <ModalProviders />
           <ThemeProvider
             attribute="class"
             defaultTheme="dark"

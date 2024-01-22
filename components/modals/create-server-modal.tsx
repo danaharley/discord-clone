@@ -1,10 +1,7 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import * as z from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 
 import {
@@ -23,31 +20,31 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { FileUpload } from "@/components/file-upload";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { FileUpload } from "@/components/file-upload";
+
+import { useModal } from "@/hooks/use-modal-store";
 
 const FormSchema = z.object({
   name: z.string().min(1, { message: "Server name is required." }),
-  imageUrl: z.string().min(1, { message: "Image URL is required." }),
+  imageUrl: z.string().min(1, {
+    message: "Server image is required.",
+  }),
 });
 
 type FormSchemaType = z.infer<typeof FormSchema>;
 
-export const InitialModal = () => {
+export const CreateServerModal = () => {
   const router = useRouter();
-  const [isMounted, setIsMounted] = useState(false);
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  const { type, isOpen, onClose } = useModal();
+
+  const isModalOpen = isOpen && type === "createServer";
 
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
-    defaultValues: {
-      name: "",
-      imageUrl: "",
-    },
+    defaultValues: { name: "", imageUrl: "" },
   });
 
   const isLoading = form.formState.isSubmitting;
@@ -58,16 +55,19 @@ export const InitialModal = () => {
 
       form.reset();
       router.refresh();
-      window.location.reload();
+      onClose();
     } catch (error) {
       console.log(error);
     }
   };
 
-  if (!isMounted) return null;
+  const handleClose = () => {
+    form.reset();
+    onClose();
+  };
 
   return (
-    <Dialog open>
+    <Dialog open={isModalOpen} onOpenChange={handleClose}>
       <DialogContent className="overflow-hidden bg-white p-0 text-black">
         <DialogHeader className="px-6 pt-8">
           <DialogTitle className="text-center text-2xl font-bold">
@@ -94,24 +94,24 @@ export const InitialModal = () => {
                           onChange={field.onChange}
                         />
                       </FormControl>
-                      <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
+
               <FormField
                 control={form.control}
                 name="name"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-xs font-bold uppercase text-zinc-500 dark:text-secondary/70">
-                      Server Name
+                      Server name
                     </FormLabel>
                     <FormControl>
                       <Input
-                        className="border-0 bg-zinc-300/50 font-semibold text-zinc-800 focus-visible:ring-0 focus-visible:ring-offset-0 dark:text-secondary/70"
-                        placeholder="Enter server name"
                         disabled={isLoading}
+                        className="border-0 bg-zinc-300/50 text-zinc-800 focus-visible:ring-0 focus-visible:ring-offset-0"
+                        placeholder="Enter server name"
                         {...field}
                       />
                     </FormControl>
@@ -120,7 +120,7 @@ export const InitialModal = () => {
                 )}
               />
             </div>
-            <DialogFooter className="bg-zinc-100 px-6 py-4">
+            <DialogFooter className="bg-gray-100 px-6 py-4">
               <Button
                 variant="discord"
                 disabled={isLoading}

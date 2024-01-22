@@ -21,7 +21,7 @@ export const FileUpload = ({ endpoint, value, onChange }: FileUploadProps) => {
           src={value}
           alt="images"
           fill
-          className="rounded-full"
+          className="rounded-full object-cover object-center"
           sizes="100%"
         />
         <button
@@ -37,7 +37,7 @@ export const FileUpload = ({ endpoint, value, onChange }: FileUploadProps) => {
 
   return (
     <UploadDropzone
-      className="ut-button:ut-ready:bg-indigo-500 ut-button:ut-uploading:bg-indigo-500/50 ut-label:text-indigo-500 disabled:ut-button:ut-uploading:cursor-not-allowed"
+      className="ut-label:text-indigo-500 ut-button:ut-ready:bg-indigo-500 ut-button:ut-uploading:bg-indigo-500/50 disabled:ut-button:ut-uploading:cursor-not-allowed"
       endpoint={endpoint}
       onClientUploadComplete={(res) => {
         onChange(res[0].url);
