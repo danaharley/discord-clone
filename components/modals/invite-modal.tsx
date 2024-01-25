@@ -65,7 +65,7 @@ export const InviteServerModal = () => {
           </Label>
           <div className="mt-2 flex items-center gap-x-2">
             <Input
-              className="border-0 bg-zinc-300/50 text-zinc-800 focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed"
+              className="border-0 bg-zinc-300/50 text-zinc-800 selection:bg-indigo-200 focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed"
               defaultValue={inviteUrl}
               disabled={isLoading}
             />
