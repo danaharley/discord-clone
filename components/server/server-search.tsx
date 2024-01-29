@@ -13,7 +13,7 @@ import {
   CommandList,
 } from "@/components/ui/command";
 
-interface ServerSearchProps {
+type ServerSearchProps = {
   data: Array<{
     label: string;
     type: "channel" | "member";
@@ -25,7 +25,7 @@ interface ServerSearchProps {
         }>
       | undefined;
   }>;
-}
+};
 
 export const ServerSearch = ({ data }: ServerSearchProps) => {
   const [open, setOpen] = useState(false);
