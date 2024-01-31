@@ -1,18 +1,17 @@
 import { redirect } from "next/navigation";
 import { Hash, Mic, ShieldAlert, ShieldCheck, Video } from "lucide-react";
+import { ChannelType, MemberRole } from "@prisma/client";
 
-import { ServerHeader } from "@/components/server/server-header";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
 import { ServerSearch } from "@/components/server/server-search";
 import { ServerSection } from "@/components/server/server-section";
 import { ServerChannel } from "@/components/server/server-channel";
 import { ServerMember } from "@/components/server/server-member";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
+import { ServerHeader } from "@/components/server/server-header";
 
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
-
-import { ChannelType, MemberRole } from "@prisma/client";
 
 type ServerSidebarProps = {
   serverId: string;

@@ -15,7 +15,7 @@ type NavigationItemProps = {
 
 export const NavigationItem = ({ id, imageUrl, name }: NavigationItemProps) => {
   const router = useRouter();
-  const params = useParams();
+  const params = useParams<{ serverId: string }>();
 
   const onClick = () => {
     router.push(`/servers/${id}`);

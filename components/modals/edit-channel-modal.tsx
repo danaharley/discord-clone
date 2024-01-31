@@ -1,6 +1,8 @@
+"use client";
+
 import { useEffect } from "react";
 import * as z from "zod";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
@@ -49,39 +51,40 @@ const FormSchema = z.object({
 
 type FormSchemaType = z.infer<typeof FormSchema>;
 
-export const CreateChannelModal = () => {
+export const EditChannelModal = () => {
   const router = useRouter();
-  const params = useParams<{ serverId: string }>();
 
   const { type, isOpen, onClose, data } = useModal();
 
-  const isModalOpen = isOpen && type === "createChannel";
+  const isModalOpen = isOpen && type === "editChannel";
 
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
-    defaultValues: { name: "", type: data.channelType || ChannelType.TEXT },
+    defaultValues: {
+      name: "",
+      type: data?.channel?.type || ChannelType.TEXT,
+    },
   });
 
   useEffect(() => {
-    if (data.channelType) {
-      form.setValue("type", data.channelType);
-    } else {
-      form.setValue("type", ChannelType.TEXT);
+    if (data?.channel) {
+      form.setValue("name", data?.channel.name);
+      form.setValue("type", data?.channel.type);
     }
-  }, [data.channelType, form]);
+  }, [data?.channel, form]);
 
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit: SubmitHandler<FormSchemaType> = async (values) => {
     try {
       const url = qs.stringifyUrl({
-        url: `/api/channels`,
+        url: `/api/channels/${data?.channel?.id}`,
         query: {
-          serverId: params?.serverId,
+          serverId: data?.server?.id,
         },
       });
 
-      await axios.post(url, values);
+      await axios.patch(url, values);
 
       form.reset();
       router.refresh();
@@ -101,7 +104,7 @@ export const CreateChannelModal = () => {
       <DialogContent className="overflow-hidden bg-white p-0 text-black">
         <DialogHeader className="px-6 pt-8">
           <DialogTitle className="text-center text-2xl font-bold">
-            Create Channel
+            Edit Channel
           </DialogTitle>
         </DialogHeader>
         <Form {...form}>
@@ -118,7 +121,7 @@ export const CreateChannelModal = () => {
                     <FormControl>
                       <Input
                         disabled={isLoading}
-                        className="border-0 bg-zinc-300/50 text-zinc-800 focus-visible:ring-0 focus-visible:ring-offset-0"
+                        className="border-0 bg-zinc-300/50 text-black focus-visible:ring-0 focus-visible:ring-offset-0"
                         placeholder="Enter channel name"
                         {...field}
                       />
@@ -139,11 +142,11 @@ export const CreateChannelModal = () => {
                       defaultValue={field.value}
                     >
                       <FormControl>
-                        <SelectTrigger className="border-0 bg-zinc-300/50 capitalize text-zinc-800 outline-none ring-0 ring-offset-0 focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0">
+                        <SelectTrigger className="border-0 bg-zinc-300/50 capitalize text-black outline-none ring-offset-0 focus:ring-0 focus:ring-offset-0">
                           <SelectValue placeholder="Select a channel type" />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent className="bg-white text-zinc-800">
+                      <SelectContent>
                         {Object.values(ChannelType).map((type) => (
                           <SelectItem
                             key={type}
@@ -161,12 +164,8 @@ export const CreateChannelModal = () => {
               />
             </div>
             <DialogFooter className="bg-gray-100 px-6 py-4">
-              <Button
-                variant="discord"
-                disabled={isLoading}
-                className="disabled:cursor-not-allowed"
-              >
-                Create
+              <Button variant="discord" disabled={isLoading}>
+                Save
               </Button>
             </DialogFooter>
           </form>
