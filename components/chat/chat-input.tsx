@@ -10,6 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { EmojiPicker } from "@/components/emoji-picker";
 
 import { useModal } from "@/hooks/use-modal-store";
 
@@ -79,11 +80,17 @@ export const ChatInput = ({ apiUrl, query, name, type }: ChatInputProps) => {
                     placeholder={`Message ${type === "conversation" ? name : "#" + name}`}
                     {...field}
                   />
-                  {/* <div className="absolute top-7 right-8">
+                  <div className="absolute right-8 top-7">
                     <EmojiPicker
-                      onChange={(emoji: string) => field.onChange(`${field.value} ${emoji}`)}
+                      onChange={(emoji: string) =>
+                        field.onChange(
+                          field.value && field.value.length
+                            ? `${field.value} ${emoji}`
+                            : `${emoji}`,
+                        )
+                      }
                     />
-                  </div> */}
+                  </div>
                 </div>
               </FormControl>
             </FormItem>
